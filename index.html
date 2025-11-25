@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+     <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,23 +7,24 @@
     <style>
         body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background-color: #f0f0f0; }
         #message { font-size: 24px; color: #333; }
-        #message.error { color: red; } /* Added for error styling */
+        #message.error { color: red; }
         #code { font-size: 32px; font-weight: bold; color: #007bff; margin: 20px 0; }
         button { padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; }
         button:hover { background-color: #0056b3; }
     </style>
 </head>
 <body>
-    <div id="message">Processing your request...</div> <!-- Added initial text to avoid blank page -->
+    <div id="message">Processing your request...</div>
     <div id="code-container" style="display: none;">
         <p id="code"></p>
         <button id="copy-btn">Copy Code</button>
     </div>
     <script type="module">
-      // Import the functions you need from the SDKs you need
+      // Import Firebase
       import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
       import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-      // Your web app's Firebase configuration
+
+      // Firebase config
       const firebaseConfig = {
         apiKey: "AIzaSyBLiKwKj2eiAMfoWwwphrn7e9IAwDewUDE",
         authDomain: "accountify-3-a9f6b.firebaseapp.com",
@@ -33,13 +34,12 @@
         appId: "1:108549592928:web:b373a492566f1077c13005",
         measurementId: "G-G2YEW8ZW4X"
       };
+
       // Initialize Firebase
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
-      // Make db available to non-module scripts
-      window.db = db;
-    </script>
-    <script>
+
+      // Now the async function can use db directly
       (async function(){
         var _0x5a3b=String.fromCharCode;
         var _0x1f2e=_0x5a3b(100,117)+_0x5a3b(115,116,121);
@@ -90,7 +90,6 @@
             throw hashError;
           }
         }
-        const db = window.db;
         var validHashes=['77bd90bcb62159b22a8271044bda93573258a74d343f6df852fe4d78d02bdd20','8653f63242671b7edc7862438effeb84e0c6b0f6fcb44188e0abd70cebf143bd','51cd59e61198aa3d79a1680a3d13713de250c3af2ccf030f49236f96b39d5941'];
         var _0x3b4c=new URLSearchParams(window.location.search);
         var _0x4d5e=_0x3b4c.get('access');
@@ -100,11 +99,11 @@
         var _0x2o3q=document.getElementById('copy-btn');
         try {
           if(_0x4d5e){
-            console.log('Access key provided:', _0x4d5e); // Debug log
+            console.log('Access key provided:', _0x4d5e);
             const _0xKeyHash=await _0xHashKey(_0x4d5e);
-            console.log('Computed hash:', _0xKeyHash); // Debug log
+            console.log('Computed hash:', _0xKeyHash);
             const usedDoc=await db.collection('usedHashes').doc(_0xKeyHash).get();
-            console.log('Used doc exists:', usedDoc.exists); // Debug log
+            console.log('Used doc exists:', usedDoc.exists);
             var _0x8k9m=localStorage.getItem('claimedCode_'+_0xKeyHash);
             if(usedDoc.exists || _0x8k9m){
               _0x9l0n.textContent='This key has already been claimed.';
@@ -142,4 +141,4 @@
       })();
     </script>
 </body>
-</html>
+</html>   

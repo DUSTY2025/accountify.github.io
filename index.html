@@ -1,4 +1,4 @@
-     <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -20,9 +20,9 @@
         <button id="copy-btn">Copy Code</button>
     </div>
     <script type="module">
-      // Import Firebase
+      // Import Firebase modules
       import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-      import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+      import { getFirestore, collection, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
       // Firebase config
       const firebaseConfig = {
@@ -39,7 +39,7 @@
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
 
-      // Now the async function can use db directly
+      // Now the async function can use db and imported functions
       (async function(){
         var _0x5a3b=String.fromCharCode;
         var _0x1f2e=_0x5a3b(100,117)+_0x5a3b(115,116,121);
@@ -102,17 +102,18 @@
             console.log('Access key provided:', _0x4d5e);
             const _0xKeyHash=await _0xHashKey(_0x4d5e);
             console.log('Computed hash:', _0xKeyHash);
-            const usedDoc=await db.collection('usedHashes').doc(_0xKeyHash).get();
-            console.log('Used doc exists:', usedDoc.exists);
+            const usedRef = doc(collection(db, 'usedHashes'), _0xKeyHash);
+            const usedDoc = await getDoc(usedRef);
+            console.log('Used doc exists:', usedDoc.exists());
             var _0x8k9m=localStorage.getItem('claimedCode_'+_0xKeyHash);
-            if(usedDoc.exists || _0x8k9m){
+            if(usedDoc.exists() || _0x8k9m){
               _0x9l0n.textContent='This key has already been claimed.';
               _0x1n2p.textContent='Your code: '+(_0x8k9m||' (claimed by someone else)');
               _0x0m1o.style.display='block';
             }else{
               if(validHashes.includes(_0xKeyHash)){
                 var _0x3p4r=_0x1a2b();
-                await db.collection('usedHashes').doc(_0xKeyHash).set({used: true});
+                await setDoc(usedRef, {used: true});
                 localStorage.setItem('claimedCode_'+_0xKeyHash,_0x3p4r);
                 _0x9l0n.textContent='Code claimed successfully!';
                 _0x1n2p.textContent='Your code: '+_0x3p4r;
@@ -141,4 +142,4 @@
       })();
     </script>
 </body>
-</html>   
+</html>     

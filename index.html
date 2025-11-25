@@ -3,105 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Claim your unique code securely via a shortlink.">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com; connect-src 'self' https://firestore.googleapis.com;">
     <title>Claim Your Code</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon"> <!-- Add your favicon here if available -->
     <style>
-        :root {
-            --primary-color: #007bff;
-            --text-color: #333;
-            --bg-color: #f0f0f0;
-            --error-color: #dc3545;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 5vh 2vw;
-            background-color: var(--bg-color);
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
-        main {
-            max-width: 600px;
-            width: 100%;
-        }
-        #message {
-            font-size: 1.5rem; /* 24px equivalent */
-            color: var(--text-color);
-            margin-bottom: 20px;
-            transition: color 0.3s ease;
-        }
-        #message.error {
-            color: var(--error-color);
-        }
-        #code-container {
-            display: none;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        #code {
-            font-size: 2rem; /* 32px equivalent */
-            font-weight: bold;
-            color: var(--primary-color);
-            margin: 20px 0;
-            word-break: break-all; /* Prevent overflow on long codes */
-        }
-        button {
-            padding: 10px 20px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.3s ease;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        button:focus {
-            outline: 2px solid var(--primary-color);
-        }
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background-color: #f0f0f0; }
+        #message { font-size: 24px; color: #333; }
+        #message.error { color: red; } /* Added for error styling */
+        #code { font-size: 32px; font-weight: bold; color: #007bff; margin: 20px 0; }
+        button { padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
     </style>
 </head>
 <body>
-    <noscript>
-        <div style="color: red; font-size: 24px;">JavaScript is required to claim your code. Please enable it and reload the page.</div>
-    </noscript>
-    <main role="main">
-        <div id="message" role="alert" aria-live="polite">Processing your request...</div>
-        <div id="code-container">
-            <p id="code"></p>
-            <button id="copy-btn" aria-label="Copy the claimed code to clipboard">Copy Code</button>
-        </div>
-    </main>
+    <div id="message">Processing your request...</div> <!-- Added initial text to avoid blank page -->
+    <div id="code-container" style="display: none;">
+        <p id="code"></p>
+        <button id="copy-btn">Copy Code</button>
+    </div>
     <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyBLiKwKj2eiAMfoWwwphrn7e9IAwDewUDE",
-            authDomain: "accountify-3-a9f6b.firebaseapp.com",
-            projectId: "accountify-3-a9f6b",
-            storageBucket: "accountify-3-a9f6b.firebasestorage.app",
-            messagingSenderId: "108549592928",
-            appId: "1:108549592928:web:b373a492566f1077c13005",
-            measurementId: "G-G2YEW8ZW4X"
-        };
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        // Make db available to non-module scripts
-        window.db = db;
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+      import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyBLiKwKj2eiAMfoWwwphrn7e9IAwDewUDE",
+        authDomain: "accountify-3-a9f6b.firebaseapp.com",
+        projectId: "accountify-3-a9f6b",
+        storageBucket: "accountify-3-a9f6b.firebasestorage.app",
+        messagingSenderId: "108549592928",
+        appId: "1:108549592928:web:b373a492566f1077c13005",
+        measurementId: "G-G2YEW8ZW4X"
+      };
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      // Make db available to non-module scripts
+      window.db = db;
     </script>
-    <script src="script.js"></script>
+    <script>
+      (async function(){
+        var _0x5a3b=String.fromCharCode;
+        var _0x1f2e=_0x5a3b(100,117)+_0x5a3b(115,116,121);
+        var _0x4c7d='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        var _0x3e6f=function(){
+          var _0x2b1c=Math.floor(Math.random()*5)+6;
+          var _0x4a5d='';
+          for(var _0x6h9i=0;_0x6h9i<_0x2b1c;_0x6h9i++){
+            _0x4a5d+=_0x4c7d.charAt(Math.floor(Math.random()*_0x4c7d.length));
+          }
+          var _0x7j8k=Math.floor(Math.random()*3);
+          var _0x9m0p;
+          if(_0x7j8k===0){
+            _0x9m0p=_0x1f2e+_0x4a5d;
+          }else if(_0x7j8k===2){
+            _0x9m0p=_0x4a5d+_0x1f2e;
+          }else{
+            var _0x8n7o=Math.floor(_0x4a5d.length/2);
+            _0x9m0p=_0x4a5d.slice(0,_0x8n7o)+_0x1f2e+_0x4a5d.slice(_0x8n7o);
+          }
+          if(Math.random()>1){}
+          return _0x9m0p;
+        };
+        var _0x2d4e=function(_0x3f5g){
+          var _0x4b6h='';
+          for(var _0x5c7i=0;_0x5c7i<_0x3f5g.length;_0x5c7i++){
+            var _0x6d8j=_0x3f5g.charCodeAt(_0x5c7i);
+            var _0x7e9k=(_0x6d8j+(_0x5c7i*3))%256;
+            var _0x8f0m=_0x7e9k.toString(16).padStart(2,'0').toUpperCase();
+            _0x4b6h+=_0x8f0m;
+            if(false===true){}
+          }
+          return _0x4b6h;
+        };
+        var _0x1a2b=function(){
+          var _0x2c3d=_0x3e6f();
+          return _0x2d4e(_0x2c3d);
+        };
+        async function _0xHashKey(key){
+          const encoder=new TextEncoder();
+          const data=encoder.encode(key);
+          try {
+            const hashBuffer=await crypto.subtle.digest('SHA-256',data);
+            const hashArray=Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b=>b.toString(16).padStart(2,'0')).join('');
+          } catch (hashError) {
+            console.error('Hash error:', hashError);
+            throw hashError;
+          }
+        }
+        const db = window.db;
+        var validHashes=['77bd90bcb62159b22a8271044bda93573258a74d343f6df852fe4d78d02bdd20','8653f63242671b7edc7862438effeb84e0c6b0f6fcb44188e0abd70cebf143bd','51cd59e61198aa3d79a1680a3d13713de250c3af2ccf030f49236f96b39d5941'];
+        var _0x3b4c=new URLSearchParams(window.location.search);
+        var _0x4d5e=_0x3b4c.get('access');
+        var _0x9l0n=document.getElementById('message');
+        var _0x0m1o=document.getElementById('code-container');
+        var _0x1n2p=document.getElementById('code');
+        var _0x2o3q=document.getElementById('copy-btn');
+        try {
+          if(_0x4d5e){
+            console.log('Access key provided:', _0x4d5e); // Debug log
+            const _0xKeyHash=await _0xHashKey(_0x4d5e);
+            console.log('Computed hash:', _0xKeyHash); // Debug log
+            const usedDoc=await db.collection('usedHashes').doc(_0xKeyHash).get();
+            console.log('Used doc exists:', usedDoc.exists); // Debug log
+            var _0x8k9m=localStorage.getItem('claimedCode_'+_0xKeyHash);
+            if(usedDoc.exists || _0x8k9m){
+              _0x9l0n.textContent='This key has already been claimed.';
+              _0x1n2p.textContent='Your code: '+(_0x8k9m||' (claimed by someone else)');
+              _0x0m1o.style.display='block';
+            }else{
+              if(validHashes.includes(_0xKeyHash)){
+                var _0x3p4r=_0x1a2b();
+                await db.collection('usedHashes').doc(_0xKeyHash).set({used: true});
+                localStorage.setItem('claimedCode_'+_0xKeyHash,_0x3p4r);
+                _0x9l0n.textContent='Code claimed successfully!';
+                _0x1n2p.textContent='Your code: '+_0x3p4r;
+                _0x0m1o.style.display='block';
+              }else{
+                _0x9l0n.textContent='Invalid access key.';
+              }
+            }
+          }else{
+            _0x9l0n.textContent='Please access this page via the shortlink to claim your code.';
+          }
+        } catch(error){
+          _0x9l0n.textContent='Error: '+error.message;
+          _0x9l0n.classList.add('error');
+          console.error(error);
+        }
+        var _0xdead=Math.random();
+        _0x2o3q.addEventListener('click',function(){
+          var _0x4q5s=_0x1n2p.textContent.replace('Your code: ','');
+          navigator.clipboard.writeText(_0x4q5s).then(function(){
+            alert('Code copied to clipboard!');
+          }).catch(function(){
+            alert('Failed to copy. Please copy manually.');
+          });
+        });
+      })();
+    </script>
 </body>
 </html>

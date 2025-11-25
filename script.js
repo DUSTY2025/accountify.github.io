@@ -38,7 +38,7 @@
     const hashArray=Array.from(new Uint8Array(hashBuffer));
     return hashArray.map(b=>b.toString(16).padStart(2,'0')).join('');
   }
-  const db = firebase.firestore();
+  const db = window.db;
   var validHashes=['535a5188ed238d2d93400c69218031dae46e62440a64bc35e2021c2c9a95960a','88c02772094f42c9cc21b5aeeb1aeb76430194a4ff6feb019b0138cdbef0abd6','874692cdc5540390fd47b0978e5e3fadce810465649f24fba34627ccb859fac7'];
   var _0x3b4c=new URLSearchParams(window.location.search);
   var _0x4d5e=_0x3b4c.get('access');
@@ -51,8 +51,8 @@
       console.log('Access key provided:', _0x4d5e);
       const _0xKeyHash=await _0xHashKey(_0x4d5e);
       console.log('Computed hash:', _0xKeyHash);
-      const usedRef = db.collection('usedHashes').doc(_0xKeyHash);
-      const usedDoc = await usedRef.get();
+      const usedRef = window.doc(window.collection(db, 'usedHashes'), _0xKeyHash);
+      const usedDoc = await window.getDoc(usedRef);
       console.log('Used doc exists:', usedDoc.exists());
       var _0x8k9m=localStorage.getItem('claimedCode_'+_0xKeyHash);
       if(usedDoc.exists() || _0x8k9m){
@@ -62,7 +62,7 @@
       }else{
         if(validHashes.includes(_0xKeyHash)){
           var _0x3p4r=_0x1a2b();
-          await usedRef.set({used: true});
+          await window.setDoc(usedRef, {used: true});
           localStorage.setItem('claimedCode_'+_0xKeyHash,_0x3p4r);
           _0x9l0n.textContent='Code claimed successfully!';
           _0x1n2p.textContent='Your code: '+_0x3p4r;

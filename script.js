@@ -1,7 +1,7 @@
 (async function(){
-    function s(c){return String.fromCharCode.apply(null,c);}
-    const dusty = s([100,117,115,116,121]);
+    const dusty = String.fromCharCode(100,117,115,116,121);
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
     function genText(){
         let len = Math.floor(Math.random()*5)+6, r='';
         for(let i=0;i<len;i++) r+=chars.charAt(Math.floor(Math.random()*chars.length));
@@ -44,31 +44,36 @@
     const btn = document.getElementById('copy-btn');
 
     if(!key){
-        msg.textContent = 'Please access this page via the shortlink to claim your code.';
+        msg.textContent='Please access this page via the shortlink to claim your code.';
         return;
     }
 
-    const hash = await hashKey(key);
-    const usedRef = window.doc(db,'usedHashes',hash);
-    const usedSnap = await window.getDoc(usedRef);
-    const already = localStorage.getItem('c_'+hash);
+    try{
+        const hash = await hashKey(key);
+        const usedRef = doc(db,'usedHashes',hash);           // ← fixed: just doc(...)
+        const usedSnap = await getDoc(usedRef);              // ← fixed: just getDoc(...)
+        const already = localStorage.getItem('c_'+hash);
 
-    if(usedSnap.exists() || already){
-        msg.textContent = 'This key has already been claimed.';
-        codeEl.textContent = 'Your code: ' + (already || '(claimed by someone else)');
-        box.style.display='block';
-        return;
-    }
+        if(usedSnap.exists() || already){
+            msg.textContent='This key has already been claimed.';
+            codeEl.textContent='Your code: '+(already||'(claimed by someone else)');
+            box.style.display='block';
+            return;
+        }
 
-    if(validHashes.includes(hash)){
-        const code = genCode();
-        await window.setDoc(usedRef,{used:true});
-        localStorage.setItem('c_'+hash,code);
-        msg.textContent = 'Code claimed successfully!';
-        codeEl.textContent = 'Your code: '+code;
-        box.style.display='block';
-    }else{
-        msg.textContent = 'Invalid access key.';
+        if(validHashes.includes(hash)){
+            const code = genCode();
+            await setDoc(usedRef,{used:true});               // ← fixed: just setDoc(...)
+            localStorage.setItem('c_'+hash,code);
+            msg.textContent='Code claimed successfully!';
+            codeEl.textContent='Your code: '+code;
+            box.style.display='block';
+        }else{
+            msg.textContent='Invalid access key.';
+        }
+    }catch(e){
+        msg.textContent='Error – check internet or try again later.';
+        console.error(e);
     }
 
     btn.onclick = () => {

@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Claim Your Code</title>
     <style>
-        body {font-family: Arial, sans-serif; text-align: center; padding: 50px; background:#f0f0f0;}
-        #message {font-size: 24px; color: #333;}
-        #code {font-size: 32px; font-weight: bold; color: #007bff; margin: 20px 0;}
-        button {padding: 10px 20px; background:#007bff; color:white; border:none; cursor:pointer;}
+        body {font-family:Arial,sans-serif;text-align:center;padding:50px;background:#f0f0f0;}
+        #message {font-size:24px;color:#333;}
+        #code {font-size:32px;font-weight:bold;color:#007bff;margin:20px 0;}
+        button {padding:10px 20px;background:#007bff;color:white;border:none;cursor:pointer;}
         button:hover {background:#0056b3;}
     </style>
 </head>
@@ -19,7 +19,6 @@
         <button id="copy-btn">Copy Code</button>
     </div>
 
-    <!-- Firebase v9+ Modular SDK -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
       import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
@@ -36,6 +35,7 @@
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
 
+      // Expose everything your index.js needs
       window.db = db;
       window.doc = doc;
       window.getDoc = getDoc;

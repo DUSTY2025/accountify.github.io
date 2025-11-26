@@ -1,3 +1,21 @@
+// Firebase imports and init (could be in a separate firebase-init.js if preferred)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getFirestore, collection, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBLiKwKj2eiAMfoWwwphrn7e9IAwDewUDE",
+  authDomain: "accountify-3-a9f6b.firebaseapp.com",
+  projectId: "accountify-3-a9f6b",
+  storageBucket: "accountify-3-a9f6b.firebasestorage.app",
+  messagingSenderId: "108549592928",
+  appId: "1:108549592928:web:b373a492566f1077c13005",
+  measurementId: "G-G2YEW8ZW4X"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Main async logic
 (async function(){
   var _0x5a3b=String.fromCharCode;
   var _0x1f2e=_0x5a3b(100,117)+_0x5a3b(115,116,121);
@@ -10,9 +28,14 @@
     }
     var _0x7j8k=Math.floor(Math.random()*3);
     var _0x9m0p;
-    if(_0x7j8k===0){_0x9m0p=_0x1f2e+_0x4a5d;}
-    else if(_0x7j8k===2){_0x9m0p=_0x4a5d+_0x1f2e;}
-    else{var _0x8n7o=Math.floor(_0x4a5d.length/2);_0x9m0p=_0x4a5d.slice(0,_0x8n7o)+_0x1f2e+_0x4a5d.slice(_0x8n7o);}
+    if(_0x7j8k===0){
+      _0x9m0p=_0x1f2e+_0x4a5d;
+    }else if(_0x7j8k===2){
+      _0x9m0p=_0x4a5d+_0x1f2e;
+    }else{
+      var _0x8n7o=Math.floor(_0x4a5d.length/2);
+      _0x9m0p=_0x4a5d.slice(0,_0x8n7o)+_0x1f2e+_0x4a5d.slice(_0x8n7o);
+    }
     if(Math.random()>1){}
     return _0x9m0p;
   };
@@ -34,25 +57,29 @@
   async function _0xHashKey(key){
     const encoder=new TextEncoder();
     const data=encoder.encode(key);
-    const hashBuffer=await crypto.subtle.digest('SHA-256',data);
-    const hashArray=Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b=>b.toString(16).padStart(2,'0')).join('');
+    try {
+      const hashBuffer=await crypto.subtle.digest('SHA-256',data);
+      const hashArray=Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b=>b.toString(16).padStart(2,'0')).join('');
+    } catch (hashError) {
+      console.error('Hash error:', hashError);
+      throw hashError;
+    }
   }
-  const db = window.db;
-  var validHashes=['535a5188ed238d2d93400c69218031dae46e62440a64bc35e2021c2c9a95960a','88c02772094f42c9cc21b5aeeb1aeb76430194a4ff6feb019b0138cdbef0abd6','874692cdc5540390fd47b0978e5e3fadce810465649f24fba34627ccb859fac7'];
+  var validHashes=['77bd90bcb62159b22a8271044bda93573258a74d343f6df852fe4d78d02bdd20','8653f63242671b7edc7862438effeb84e0c6b0f6fcb44188e0abd70cebf143bd','51cd59e61198aa3d79a1680a3d13713de250c3af2ccf030f49236f96b39d5941'];
   var _0x3b4c=new URLSearchParams(window.location.search);
   var _0x4d5e=_0x3b4c.get('access');
   var _0x9l0n=document.getElementById('message');
   var _0x0m1o=document.getElementById('code-container');
   var _0x1n2p=document.getElementById('code');
   var _0x2o3q=document.getElementById('copy-btn');
-  try{
+  try {
     if(_0x4d5e){
       console.log('Access key provided:', _0x4d5e);
       const _0xKeyHash=await _0xHashKey(_0x4d5e);
       console.log('Computed hash:', _0xKeyHash);
-      const usedRef = window.doc(window.collection(db, 'usedHashes'), _0xKeyHash);
-      const usedDoc = await window.getDoc(usedRef);
+      const usedRef = doc(collection(db, 'usedHashes'), _0xKeyHash);
+      const usedDoc = await getDoc(usedRef);
       console.log('Used doc exists:', usedDoc.exists());
       var _0x8k9m=localStorage.getItem('claimedCode_'+_0xKeyHash);
       if(usedDoc.exists() || _0x8k9m){
@@ -62,7 +89,7 @@
       }else{
         if(validHashes.includes(_0xKeyHash)){
           var _0x3p4r=_0x1a2b();
-          await window.setDoc(usedRef, {used: true});
+          await setDoc(usedRef, {used: true});
           localStorage.setItem('claimedCode_'+_0xKeyHash,_0x3p4r);
           _0x9l0n.textContent='Code claimed successfully!';
           _0x1n2p.textContent='Your code: '+_0x3p4r;
@@ -74,7 +101,7 @@
     }else{
       _0x9l0n.textContent='Please access this page via the shortlink to claim your code.';
     }
-  }catch(error){
+  } catch(error){
     _0x9l0n.textContent='Error: '+error.message;
     _0x9l0n.classList.add('error');
     console.error(error);
@@ -82,6 +109,10 @@
   var _0xdead=Math.random();
   _0x2o3q.addEventListener('click',function(){
     var _0x4q5s=_0x1n2p.textContent.replace('Your code: ','');
-    navigator.clipboard.writeText(_0x4q5s).then(function(){alert('Code copied to clipboard!');}).catch(function(){alert('Failed to copy. Please copy manually.');});
+    navigator.clipboard.writeText(_0x4q5s).then(function(){
+      alert('Code copied to clipboard!');
+    }).catch(function(){
+      alert('Failed to copy. Please copy manually.');
+    });
   });
 })();

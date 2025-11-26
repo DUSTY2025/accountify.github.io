@@ -1,7 +1,7 @@
-// Firebase imports and init (could be in a separate firebase-init.js if preferred)
+// Import Firebase modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { getFirestore, collection, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyBLiKwKj2eiAMfoWwwphrn7e9IAwDewUDE",
   authDomain: "accountify-3-a9f6b.firebaseapp.com",
@@ -11,11 +11,10 @@ const firebaseConfig = {
   appId: "1:108549592928:web:b373a492566f1077c13005",
   measurementId: "G-G2YEW8ZW4X"
 };
-
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
-// Main async logic
+// Now the async function can use db and imported functions
 (async function(){
   var _0x5a3b=String.fromCharCode;
   var _0x1f2e=_0x5a3b(100,117)+_0x5a3b(115,116,121);
@@ -66,7 +65,7 @@ const db = getFirestore(app);
       throw hashError;
     }
   }
-  var validHashes=['77bd90bcb62159b22a8271044bda93573258a74d343f6df852fe4d78d02bdd20','8653f63242671b7edc7862438effeb84e0c6b0f6fcb44188e0abd70cebf143bd','51cd59e61198aa3d79a1680a3d13713de250c3af2ccf030f49236f96b39d5941'];
+  var validHashes=['7a390f5591e72d1febca01ae6b91fc94231f6271781ca188343f82b914b1c779','88c02772094f42c9cc21b5aeeb1aeb76430194a4ff6feb019b0138cdbef0abd6','874692cdc5540390fd47b0978e5e3fadce810465649f24fba34627ccb859fac7'];
   var _0x3b4c=new URLSearchParams(window.location.search);
   var _0x4d5e=_0x3b4c.get('access');
   var _0x9l0n=document.getElementById('message');

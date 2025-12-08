@@ -11,14 +11,111 @@
         #code { font-size: 32px; font-weight: bold; color: #007bff; margin: 20px 0; }
         button { padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; }
         button:hover { background-color: #0056b3; }
+        #code-container { display: none; }
     </style>
 </head>
 <body>
-    <div id="message">Processing your request...</div>
-    <div id="code-container" style="display: none;">
+    <div id="message">Processing...</div>
+    <div id="code-container">
         <p id="code"></p>
         <button id="copy-btn">Copy Code</button>
     </div>
-    <script type="module" src="script.js"></script>
+
+    <script type="module">
+        // Import Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyBLiKwKj2eiAMfoWwwphrn7e9IAwDewUDE",
+          authDomain: "accountify-3-a9f6b.firebaseapp.com",
+          projectId: "accountify-3-a9f6b",
+          storageBucket: "accountify-3-a9f6b.firebasestorage.app",
+          messagingSenderId: "108549592928",
+          appId: "1:108549592928:web:b373a492566f1077c13005",
+          measurementId: "G-G2YEW8ZW4X"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // This just turns the user's password into a hash ID
+        async function hashKey(key){
+            const encoder = new TextEncoder();
+            const data = encoder.encode(key);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            return Array.from(new Uint8Array(hashBuffer))
+                .map(b => b.toString(16).padStart(2,'0')).join('');
+        }
+
+        const messageEl = document.getElementById('message');
+        const containerEl = document.getElementById('code-container');
+        const codeEl = document.getElementById('code');
+
+        (async function(){
+            // 1. Get Key from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const accessKey = urlParams.get('access');
+
+            if(!accessKey){
+                messageEl.textContent = 'Please access this page via the shortlink.';
+                return;
+            }
+
+            try {
+                // 2. Hash the key to find the Document ID
+                const docId = await hashKey(accessKey);
+                
+                // 3. Check Local Cache (to avoid database calls if they refresh)
+                const localData = localStorage.getItem('claimed_' + docId);
+                if(localData){
+                    showSuccess(localData, true);
+                    return;
+                }
+
+                // 4. Check Firebase Database
+                const docRef = doc(db, "secretCodes", docId);
+                const docSnap = await getDoc(docRef);
+
+                if(docSnap.exists()){
+                    const data = docSnap.data();
+
+                    if(data.used){
+                        messageEl.textContent = 'This key has already been claimed.';
+                        messageEl.classList.add('error');
+                    } else {
+                        // 5. Mark as Used in Database
+                        await updateDoc(docRef, { used: true });
+
+                        // 6. Save to Local Storage and Show User
+                        localStorage.setItem('claimed_' + docId, data.code);
+                        showSuccess(data.code, false);
+                    }
+                } else {
+                    // Document doesn't exist = Key is wrong
+                    messageEl.textContent = 'Invalid access key.';
+                    messageEl.classList.add('error');
+                }
+
+            } catch(e) {
+                console.error(e);
+                messageEl.textContent = 'Error connecting to server.';
+                messageEl.classList.add('error');
+            }
+        })();
+
+        function showSuccess(code, isCached){
+            messageEl.textContent = isCached ? 'Restored from cache.' : 'Code claimed successfully!';
+            codeEl.textContent = 'Your code: ' + code;
+            containerEl.style.display = 'block';
+        }
+
+        document.getElementById('copy-btn').addEventListener('click', function(){
+            const text = codeEl.textContent.replace('Your code: ', '');
+            navigator.clipboard.writeText(text)
+                .then(() => alert('Code copied!'))
+                .catch(() => alert('Manual copy required.'));
+        });
+    </script>
 </body>
 </html>

@@ -65,7 +65,7 @@ const db = getFirestore(app);
       throw hashError;
     }
   }
-  var validHashes=['7a390f5591e72d1febca01ae6b91fc94231f6271781ca188343f82b914b1c779','88c02772094f42c9cc21b5aeeb1aeb76430194a4ff6feb019b0138cdbef0abd6','874692cdc5540390fd47b0978e5e3fadce810465649f24fba34627ccb859fac7','06a0124b77d7ebf25a65f81947e3350e48ca02ef76130e66222742b24c668846'];
+  var validHashes=['c1dd0af709e3a4df7935a65150dcb87a1eb5ded2031faaf19adcedc826f367a9','88c02772094f42c9cc21b5aeeb1aeb76430194a4ff6feb019b0138cdbef0abd6','874692cdc5540390fd47b0978e5e3fadce810465649f24fba34627ccb859fac7','06a0124b77d7ebf25a65f81947e3350e48ca02ef76130e66222742b24c668846'];
   var _0x3b4c=new URLSearchParams(window.location.search);
   var _0x4d5e=_0x3b4c.get('access');
   var _0x9l0n=document.getElementById('message');

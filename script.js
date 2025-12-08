@@ -1,6 +1,7 @@
-// Import Firebase modules
+// Import Firebase modules (app only—no Firestore needed)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { getFirestore, collection, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-functions.js";
+
 // Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyBLiKwKj2eiAMfoWwwphrn7e9IAwDewUDE",
@@ -11,107 +12,68 @@ const firebaseConfig = {
   appId: "1:108549592928:web:b373a492566f1077c13005",
   measurementId: "G-G2YEW8ZW4X"
 };
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-// Now the async function can use db and imported functions
-(async function(){
-  var _0x5a3b=String.fromCharCode;
-  var _0x1f2e=_0x5a3b(100,117)+_0x5a3b(115,116,121);
-  var _0x4c7d='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  var _0x3e6f=function(){
-    var _0x2b1c=Math.floor(Math.random()*5)+6;
-    var _0x4a5d='';
-    for(var _0x6h9i=0;_0x6h9i<_0x2b1c;_0x6h9i++){
-      _0x4a5d+=_0x4c7d.charAt(Math.floor(Math.random()*_0x4c7d.length));
-    }
-    var _0x7j8k=Math.floor(Math.random()*3);
-    var _0x9m0p;
-    if(_0x7j8k===0){
-      _0x9m0p=_0x1f2e+_0x4a5d;
-    }else if(_0x7j8k===2){
-      _0x9m0p=_0x4a5d+_0x1f2e;
-    }else{
-      var _0x8n7o=Math.floor(_0x4a5d.length/2);
-      _0x9m0p=_0x4a5d.slice(0,_0x8n7o)+_0x1f2e+_0x4a5d.slice(_0x8n7o);
-    }
-    if(Math.random()>1){}
-    return _0x9m0p;
-  };
-  var _0x2d4e=function(_0x3f5g){
-    var _0x4b6h='';
-    for(var _0x5c7i=0;_0x5c7i<_0x3f5g.length;_0x5c7i++){
-      var _0x6d8j=_0x3f5g.charCodeAt(_0x5c7i);
-      var _0x7e9k=(_0x6d8j+(_0x5c7i*3))%256;
-      var _0x8f0m=_0x7e9k.toString(16).padStart(2,'0').toUpperCase();
-      _0x4b6h+=_0x8f0m;
-      if(false===true){}
-    }
-    return _0x4b6h;
-  };
-  var _0x1a2b=function(){
-    var _0x2c3d=_0x3e6f();
-    return _0x2d4e(_0x2c3d);
-  };
-  async function _0xHashKey(key){
-    const encoder=new TextEncoder();
-    const data=encoder.encode(key);
-    try {
-      const hashBuffer=await crypto.subtle.digest('SHA-256',data);
-      const hashArray=Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map(b=>b.toString(16).padStart(2,'0')).join('');
-    } catch (hashError) {
-      console.error('Hash error:', hashError);
-      throw hashError;
-    }
+
+// Get Functions instance
+const functions = getFunctions(app);
+const claimCode = httpsCallable(functions, 'claimCode');
+
+// Main async function
+(async function() {
+  const params = new URLSearchParams(window.location.search);
+  const access = params.get('access');
+  const message = document.getElementById('message');
+  const codeContainer = document.getElementById('code-container');
+  const codeElem = document.getElementById('code');
+  const copyBtn = document.getElementById('copy-btn');
+
+  // Optional: Check offline
+  if (!navigator.onLine) {
+    message.textContent = 'You appear to be offline. Please connect and try again.';
+    message.classList.add('error');
+    return;
   }
-  var validHashes=['c1dd0af709e3a4df7935a65150dcb87a1eb5ded2031faaf19adcedc826f367a9','88c02772094f42c9cc21b5aeeb1aeb76430194a4ff6feb019b0138cdbef0abd6','874692cdc5540390fd47b0978e5e3fadce810465649f24fba34627ccb859fac7','06a0124b77d7ebf25a65f81947e3350e48ca02ef76130e66222742b24c668846'];
-  var _0x3b4c=new URLSearchParams(window.location.search);
-  var _0x4d5e=_0x3b4c.get('access');
-  var _0x9l0n=document.getElementById('message');
-  var _0x0m1o=document.getElementById('code-container');
-  var _0x1n2p=document.getElementById('code');
-  var _0x2o3q=document.getElementById('copy-btn');
+
   try {
-    if(_0x4d5e){
-      console.log('Access key provided:', _0x4d5e);
-      const _0xKeyHash=await _0xHashKey(_0x4d5e);
-      console.log('Computed hash:', _0xKeyHash);
-      const usedRef = doc(collection(db, 'usedHashes'), _0xKeyHash);
-      const usedDoc = await getDoc(usedRef);
-      console.log('Used doc exists:', usedDoc.exists());
-      var _0x8k9m=localStorage.getItem('claimedCode_'+_0xKeyHash);
-      if(usedDoc.exists() || _0x8k9m){
-        _0x9l0n.textContent='This key has already been claimed.';
-        _0x1n2p.textContent='Your code: '+(_0x8k9m||' (claimed by someone else)');
-        _0x0m1o.style.display='block';
-      }else{
-        if(validHashes.includes(_0xKeyHash)){
-          var _0x3p4r=_0x1a2b();
-          await setDoc(usedRef, {used: true});
-          localStorage.setItem('claimedCode_'+_0xKeyHash,_0x3p4r);
-          _0x9l0n.textContent='Code claimed successfully!';
-          _0x1n2p.textContent='Your code: '+_0x3p4r;
-          _0x0m1o.style.display='block';
-        }else{
-          _0x9l0n.textContent='Invalid access key.';
-        }
-      }
-    }else{
-      _0x9l0n.textContent='Please access this page via the shortlink to claim your code.';
+    if (!access) {
+      message.textContent = 'Please access this page via the shortlink to claim your code.';
+      return;
     }
-  } catch(error){
-    _0x9l0n.textContent='Error: '+error.message;
-    _0x9l0n.classList.add('error');
-    console.error(error);
+
+    console.log('Access key provided:', access); // For debugging
+
+    const result = await claimCode({ access: access });
+    const data = result.data;
+
+    if (data.success) {
+      message.textContent = data.message;
+      codeElem.textContent = 'Your code: ' + data.code;
+      codeContainer.style.display = 'block';
+      // Optional: If you want to store the code locally (tied to access key, not hash)
+      // localStorage.setItem('claimedCode_' + access, data.code);
+    } else {
+      message.textContent = data.message;
+      // If already claimed, optionally show a stored code if you add localStorage
+    }
+  } catch (error) {
+    console.error('Claim error:', error);
+    message.textContent = 'Error: ' + error.message;
+    message.classList.add('error');
   }
-  var _0xdead=Math.random();
-  _0x2o3q.addEventListener('click',function(){
-    var _0x4q5s=_0x1n2p.textContent.replace('Your code: ','');
-    navigator.clipboard.writeText(_0x4q5s).then(function(){
-      alert('Code copied to clipboard!');
-    }).catch(function(){
-      alert('Failed to copy. Please copy manually.');
-    });
+
+  // Copy button event listener
+  copyBtn.addEventListener('click', function() {
+    const codeToCopy = codeElem.textContent.replace('Your code: ', '');
+    if (codeToCopy && codeToCopy !== 'Your code: ') {
+      navigator.clipboard.writeText(codeToCopy).then(function() {
+        alert('Code copied to clipboard!');
+      }).catch(function() {
+        alert('Failed to copy. Please copy manually.');
+      });
+    } else {
+      alert('No code to copy yet.');
+    }
   });
 })();
